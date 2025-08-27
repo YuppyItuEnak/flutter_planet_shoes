@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "848172384961",
+    "project_id": "shoes-planet",
+    "storage_bucket": "shoes-planet.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:848172384961:android:204694a24ca41111aa0a40",
+        "android_client_info": {
+          "package_name": "com.example.flutter_planet_shoes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "848172384961-57dparau6i9pldqk9scubf5vfjjcn1s1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2id_AYyyqulBYHarRlnVvlXRGJ_i8T6U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "848172384961-57dparau6i9pldqk9scubf5vfjjcn1s1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "848172384961-8fcvs1op7kh07qav9h3o4miihvik5lil.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.shoesPlanet"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
