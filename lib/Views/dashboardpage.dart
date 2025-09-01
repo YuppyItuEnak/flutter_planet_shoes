@@ -7,9 +7,8 @@ import 'package:flutter_planet_shoes/Views/Admin/adminprofile.dart';
 import 'package:flutter_planet_shoes/Views/loginpage.dart';
 
 class DashboardPage extends StatefulWidget {
-  final UserModel user;
 
-  const DashboardPage({super.key, required this.user});
+  const DashboardPage({super.key});
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();

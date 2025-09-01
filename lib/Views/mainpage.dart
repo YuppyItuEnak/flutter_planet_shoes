@@ -8,9 +8,8 @@ import 'package:flutter_planet_shoes/Views/profilepage.dart';
 import 'package:flutter_planet_shoes/Views/Users/wishlistpage.dart';
 
 class Mainpage extends StatefulWidget {
-  final UserModel user;
 
-  const Mainpage({super.key, required this.user});
+  const Mainpage({super.key});
 
   @override
   State<Mainpage> createState() => _MainpageState();

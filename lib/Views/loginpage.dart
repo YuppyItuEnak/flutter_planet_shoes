@@ -107,16 +107,17 @@ class _LoginPageState extends State<LoginPage> {
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => DashboardPage(user: us),
+                                builder: (context) => DashboardPage(),
                               ),
                               (Route<dynamic> route) =>
                                   false, // hapus semua route sebelumnya
                             );
-                          } else {
+                          } 
+                          if (us.role == UserRole.user) {
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Mainpage(user: us),
+                                builder: (context) => Mainpage(),
                               ),
                               (Route<dynamic> route) =>
                                   false, // hapus semua route sebelumnya
