@@ -14,6 +14,20 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // ---- hitung rasio item grid secara dinamis ----
+    const crossAxisCount = 2;
+    const spacing = 12.0;
+    const horizontalPadding = 12.0 * 2; // kiri+kanan GridView
+    final screenWidth = MediaQuery.sizeOf(context).width;
+
+    final gridWidth =
+        screenWidth - horizontalPadding - spacing * (crossAxisCount - 1);
+    final cardWidth = gridWidth / crossAxisCount;
+
+    // tinggi bagian bawah (judul, harga, stok, tombol)
+    const metaHeight = 140.0; // sesuaikan jika butuh
+    final childAspectRatio = cardWidth / (cardWidth + metaHeight);
+
     return Scaffold(
       body: StreamBuilder<List<ProductModel>>(
         stream: _controller.streamProducts(),
@@ -31,80 +45,98 @@ class _AdminHomePageState extends State<AdminHomePage> {
           final products = snapshot.data!;
           return GridView.builder(
             padding: const EdgeInsets.all(12),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, // 2 kolom
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: 0.75,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
+              mainAxisSpacing: spacing,
+              crossAxisSpacing: spacing,
+              childAspectRatio: childAspectRatio, // <= kunci anti-overflow
             ),
             itemCount: products.length,
             itemBuilder: (context, index) {
               final prod = products[index];
               return Card(
-                elevation: 3,
+                elevation: 4,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(12),
-                        ),
-                        child: Image.network(
-                          prod.image,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          errorBuilder: (ctx, err, st) =>
-                              const Icon(Icons.error),
+                    // --- Gambar persegi 1:1, tidak terpotong ---
+                    ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(12),
+                      ),
+                      child: SizedBox(
+                        height: cardWidth, // persegi: tinggi == lebar
+                        width: double.infinity,
+                        child: Container(
+                          color: const Color(0xFFF5F5F5),
+                          alignment: Alignment.center,
+                          child: Image.network(
+                            prod.image,
+                            fit: BoxFit.contain, // tampil utuh, tidak terpotong
+                            errorBuilder: (_, __, ___) =>
+                                const Icon(Icons.broken_image, size: 40),
+                            loadingBuilder: (ctx, child, progress) {
+                              if (progress == null) return child;
+                              return const Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        prod.name,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(
-                        "Rp ${prod.price.toStringAsFixed(0)}",
-                        style: const TextStyle(
-                          color: Colors.green,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text("Stok: ${prod.stock}"),
-                    ),
-                    const SizedBox(height: 8),
 
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueGrey,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
+                    // --- Info produk + tombol ---
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              prod.name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            "Detail Product",
-                            style: TextStyle(color: Colors.white),
-                          ),
+                            const SizedBox(height: 4),
+                            Text(
+                              "Rp ${prod.price.toStringAsFixed(0)}",
+                              style: const TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text("Stok: ${prod.stock}"),
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 38,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blueGrey,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  elevation: 0,
+                                ),
+                                onPressed: () {},
+                                child: const Text(
+                                  "Detail Product",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
