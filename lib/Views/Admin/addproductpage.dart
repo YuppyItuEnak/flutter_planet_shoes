@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_planet_shoes/Controllers/productcontroller.dart';
 import 'package:flutter_planet_shoes/Models/product.dart';
+import 'package:flutter_planet_shoes/Service/conntoapi.dart';
 import 'package:flutter_planet_shoes/Views/dashboardpage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -51,25 +52,6 @@ class _AddProductPageState extends State<AddProductPage> {
     }
   }
 
-  /// Upload image to backend (Laravel/PHP API)
-  Future<String?> _uploadImage(File file) async {
-    var uri = Uri.parse("http://10.0.2.2:8000/api/upload-image");
-
-    var request = http.MultipartRequest("POST", uri);
-    request.files.add(await http.MultipartFile.fromPath("image", file.path));
-
-    var response = await request.send();
-    print("Upload response status: ${response.statusCode}");
-    // print("Upload response body: ${await response.stream.bytesToString()}");
-
-    if (response.statusCode == 200) {
-      var responseBody = await response.stream.bytesToString();
-      final data = jsonDecode(responseBody);
-      return data['url']; // URL yang dikembalikan API
-    } else {
-      return null;
-    }
-  }
 
   Future<void> _saveProduct() async {
     if (_formKey.currentState!.validate()) {
@@ -81,7 +63,7 @@ class _AddProductPageState extends State<AddProductPage> {
       }
 
       // upload image dulu
-      _uploadedImageUrl = await _uploadImage(_selectedImage!);
+      _uploadedImageUrl = await ConnToApi.UploadImage(_selectedImage!);
 
       if (_uploadedImageUrl == null) {
         ScaffoldMessenger.of(

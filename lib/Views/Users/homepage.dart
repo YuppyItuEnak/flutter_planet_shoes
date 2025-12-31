@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       body: StreamBuilder<List<ProductModel>>(
-        stream: _controller.streamProducts(),
+        stream: _controller.getProducts(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
