@@ -22,4 +22,47 @@ class ProductController with ChangeNotifier {
       return snapshot.docs.map((doc) => ProductModel.fromDoc(doc)).toList();
     });
   }
+
+  Future<void> toggleWishlist({
+  required String userId,
+  required ProductModel product,
+}) async {
+  final doc = FirebaseFirestore.instance
+      .collection('users')
+      .doc(userId)
+      .collection('wishlist')
+      .doc(product.id);
+
+  final snapshot = await doc.get();
+
+  if (snapshot.exists) {
+    await doc.delete();
+  } else {
+    await doc.set({
+      'productId': product.id,
+      'name': product.name,
+      'image': product.image,
+      'description': product.description,
+      'price': product.price,
+      'stock': product.stock,
+      'category': product.category.name,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+  }
+}
+
+
+  Future<bool> isWishlisted({
+    required String userId,
+    required String productId,
+  }) async {
+    final doc = await _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('wishlist')
+        .doc(productId)
+        .get();
+
+    return doc.exists;
+  }
 }

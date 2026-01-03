@@ -6,6 +6,13 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
+
+  Future<UserModel> getUserInfo() async {
+    User currentUser = _auth.currentUser!;
+    DocumentSnapshot doc = await _db.collection('users').doc(currentUser.uid).get();
+    return UserModel.fromMap(doc.data() as Map<String, dynamic>, currentUser.uid);
+  }
+
   // Register
   Future<UserModel?> register(String email, String password, String username) async {
     try {
